@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "blazeqol",
+	"version": "${version}",
+	"name": "BlazeQOL",
+	"description": "Originally made by Harmfool, Edited and upgraded by Michaleq",
+	"authors": [
+		"Michaleq", "Harmfool"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "all-rights-reserved",
+	"icon": "assets/blazeqol/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.example.blazeqol.BlazeQOL"
+		],
+		"client": [
+			"com.example.blazeqol.client.BlazeQOLMOD"
+		]
+	},
+	"mixins": [
+		"blazeqol.mixins.json",
+		{
+			"config": "blazeqol.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.1",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
