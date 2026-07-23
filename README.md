@@ -11,13 +11,14 @@ Twilight Arrow Poison has been used in a range of 8 blocks from the player.
 
 Example:
 ![img.png](img.png)
-## Requirements
 
-minecraft version 1.21.11
+## Requirements (newest version)
 
-loader version 0.19.1 (fabric)
+minecraft version 26.2
 
-fabric api version 0.141.3+1.21.11
+loader version 0.19.3 (fabric)
+
+fabric api version 0.155.2+26.2
 
 ### Originally made by Harmfool for 1.8.9
 https://github.com/j4yd3nSB/SkyblockSlayerTools
