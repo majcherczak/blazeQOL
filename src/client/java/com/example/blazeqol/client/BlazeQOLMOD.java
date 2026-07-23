@@ -1,15 +1,16 @@
 package com.example.blazeqol.client;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.minecraft.resources.Identifier;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,8 +31,8 @@ public class BlazeQOLMOD implements ClientModInitializer {
 	public void onInitializeClient() {
 		// Command Registration (Client sided)
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			dispatcher.register(ClientCommandManager.literal("display")
-					.then(ClientCommandManager.argument("action", StringArgumentType.string())
+			dispatcher.register(ClientCommands.literal("display")
+					.then(ClientCommands.argument("action", StringArgumentType.string())
 							.executes(context -> {
 								String arg = StringArgumentType.getString(context, "action").toLowerCase();
 								if (arg.equals("on")) {
@@ -93,31 +94,32 @@ public class BlazeQOLMOD implements ClientModInitializer {
 		});
 
 		// Rendering
-		HudRenderCallback.EVENT.register((guiGraphics, tickDelta) -> {
-			if (!displayEnabled || bossName == null) return;
+		HudElementRegistry.addLast(
+				Identifier.fromNamespaceAndPath("blazeqol", "boss_hud"),(guiGraphics, tickDelta) -> {
+				if (!displayEnabled || bossName == null) return;
 
-			Minecraft client = Minecraft.getInstance();
-			int centerX = client.getWindow().getGuiScaledWidth() / 2;
-			int centerY = client.getWindow().getGuiScaledHeight() / 2 + 20;
+				Minecraft client = Minecraft.getInstance();
+				int centerX = client.getWindow().getGuiScaledWidth() / 2;
+				int centerY = client.getWindow().getGuiScaledHeight() / 2 + 20;
 
-			renderLine(guiGraphics, client, bossName, centerX, centerY);
-			int yOffset = 14;
+				renderLine(guiGraphics, client, bossName, centerX, centerY);
+				int yOffset = 14;
 
-			if (attunement != null) {
-				renderLine(guiGraphics, client, attunement, centerX, centerY + yOffset);
-				yOffset += 14;
+				if (attunement != null) {
+					renderLine(guiGraphics, client, attunement, centerX, centerY + yOffset);
+					yOffset += 14;
+				}
+
+				if (twilightPoison) {
+					renderLine(guiGraphics, client, "§5§l☠ TWILIGHT POISON ☠", centerX, centerY + yOffset);
+				}
+
 			}
-
-			if (twilightPoison) {
-				renderLine(guiGraphics, client, "§5§l☠ TWILIGHT POISON ☠", centerX, centerY + yOffset);
-				yOffset += 14;
-			}
-
-		});
+		);
 	}
 
-	private void renderLine(GuiGraphics graphics, Minecraft client, String text, int x, int y) {
-		graphics.drawCenteredString(client.font, Component.literal(text), x, y, 0xFFFFFFFF);
+	private void renderLine(GuiGraphicsExtractor graphics, Minecraft client, String text, int x, int y) {
+		graphics.centeredText(client.font, Component.literal(text), x, y, 0xFFFFFFFF);
 	}
 
 	private double parseHp(String s) {
